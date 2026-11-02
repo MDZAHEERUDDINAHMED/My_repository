@@ -45,10 +45,18 @@ if st.button("Predict Survival", type="primary"):
     }
 
     # Filter features and create DataFrame safely aligned with training columns
+    input_df = pd.DataFrame([input_data])
+    
+    # Filter out 'embark_town' if it exists in model_features
     features = [col for col in model_features if col != 'embark_town']
-    input_df = pd.DataFrame([input_data]).reindex(columns=features, fill_value=0)
+    
+    # Reindex forces columns to match training order precisely
+    input_df = input_df.reindex(columns=features, fill_value=0)
 
-    # Make predictions
+    # Convert all columns to numeric types to avoid type mismatch errors
+    input_df = input_df.astype(float)
+
+    # 4. Make predictions safely
     prediction = model.predict(input_df)[0]
     prob_survived = model.predict_proba(input_df)[0][1]
 

@@ -44,10 +44,11 @@ if st.button("Predict Survival", type="primary"):
         'who_woman': (sex == "female" and age >= 16)
     }
 
-    # Filter out 'embark_town' to match the actual input features
+    # Filter features and create DataFrame safely aligned with training columns
     features = [col for col in model_features if col != 'embark_town']
-    input_df = pd.DataFrame([input_data]).reindex(columns=features)
+    input_df = pd.DataFrame([input_data]).reindex(columns=features, fill_value=0)
 
+    # Make predictions
     prediction = model.predict(input_df)[0]
     prob_survived = model.predict_proba(input_df)[0][1]
 
